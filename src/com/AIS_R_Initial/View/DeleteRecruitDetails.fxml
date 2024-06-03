@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.AIS_R_Initial.Controller.DeleteRecruitDetailsController">
+   <children>
+      <Label layoutX="65.0" layoutY="57.0" text="Search" />
+      <Label id="Label1Id" fx:id="Label1Id" layoutX="160.0" layoutY="123.0" prefHeight="123.0" prefWidth="342.0" text="Label1" />
+      <TextField id="searchText" fx:id="searchText" layoutX="141.0" layoutY="53.0" prefHeight="25.0" prefWidth="362.0" />
+      <Button id="searchbtn" fx:id="searchbtn" layoutX="513.0" layoutY="53.0" mnemonicParsing="false" onAction="#search" text="Search"/>
+      <Button id="deletebtn" fx:id="deletebtn" layoutX="522.0" layoutY="349.0" mnemonicParsing="false" onAction="#delete" text="delete" />
+   </children>  
+</AnchorPane>

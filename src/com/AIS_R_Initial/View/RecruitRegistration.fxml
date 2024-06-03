@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/20.0.1" fx:controller="com.AIS_R_Initial.Controller.RecruitRegistrationController">
+     <children>
+      <AnchorPane layoutX="104.0" prefHeight="400.0" prefWidth="365.0">
+         <children>
+            <TextField id="fullNameField" fx:id="fullNameField" layoutX="124.0" layoutY="50.0" prefHeight="25.0" prefWidth="211.0" promptText="Full Name" />
+            <TextField id="addressField" fx:id="addressField" layoutX="124.0" layoutY="88.0" prefHeight="25.0" prefWidth="211.0" promptText="Address" />
+            <TextField id="phoneNumberField" fx:id="phoneNumberField" layoutX="124.0" layoutY="121.0" prefHeight="25.0" prefWidth="211.0" promptText="Phone" />
+            <TextField id="emailField" fx:id="emailField" layoutX="124.0" layoutY="160.0" prefHeight="25.0" prefWidth="211.0" promptText="Email" />
+            <TextField id="usernameField" fx:id="usernameField" layoutX="124.0" layoutY="200.0" prefHeight="25.0" prefWidth="211.0" promptText="user name" />
+            <Label layoutX="-14.0" layoutY="54.0" text="Full Name" />
+            <Label layoutX="-14.0" layoutY="92.0" text="Address" />
+            <Label layoutX="-14.0" layoutY="125.0" text="Phone No" />
+            <Label layoutX="-14.0" layoutY="164.0" text="Email" />
+            <PasswordField id="passwordField" fx:id="passwordField" layoutX="124.0" layoutY="239.0" prefHeight="25.0" prefWidth="211.0" promptText="password" />
+            <Label layoutX="-12.0" layoutY="243.0" text="Password" />
+            <Label layoutX="-18.0" layoutY="207.0" text="User name" />
+            <Button id="registerButton" fx:id="registerButton" layoutX="283.0" layoutY="361.0" mnemonicParsing="false" onAction="#Register" text="Register" />
+            <ComboBox id="QualificationComboBox" fx:id="QualificationComboBox" layoutX="124.0" layoutY="313.0" onAction="#select" prefHeight="25.0" prefWidth="211.0" />
+            <Label layoutX="-4.0" layoutY="317.0" text="Qualification" />
+            <DatePicker id="interviewDate" fx:id="interviewDate" layoutX="123.0" layoutY="276.0" onAction="#datePicker" prefHeight="25.0" prefWidth="211.0" />
+            <Label layoutX="-6.0" layoutY="280.0" text="Date" />
+         </children>
+      </AnchorPane>
+      <Label layoutX="84.0" layoutY="294.0" />
+   </children>
+</AnchorPane>
