@@ -10,6 +10,9 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -54,79 +57,103 @@ public class DeleteRecruitDetailsController implements Initializable {
     public void search(ActionEvent event) {
         String fullName = searchText.getText().trim();
         if (!fullName.isEmpty()) {
-            searchRecruit(fullName);
+            sendSearchRequest(fullName);
         }
+    }
+    
+     private void sendSearchRequest(String fullName) {
+        try (Socket socket = new Socket("localhost", 6789);
+             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
+
+            // Send search request to server
+            oos.writeObject("SearchRecruit");
+            oos.writeObject(fullName);
+
+            // Receive search results from server
+            String searchResult = (String) ois.readObject();
+            updateUI(searchResult);
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to communicate with the server.");
+        }
+    }
+
+    private void updateUI(String searchResult) {
+        Label1Id.setText(searchResult);
+        if (searchResult.equals("Recruit not found")) {
+            deletebtn.setDisable(true);
+        } else {
+            deletebtn.setDisable(false);
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String message) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     //search logic
-    private void searchRecruit(String fullName) {
-        try ( BufferedReader reader = new BufferedReader(new FileReader("recruit.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length >= 1 && data[0].equalsIgnoreCase(fullName)) {
-                    // Found the recruit, update the Label with details
-                    StringBuilder details = new StringBuilder();
-                    for (String field : data) {
-                        details.append(field).append("\n");
-                    }
-                    Label1Id.setText(details.toString());
-                    // Enable the delete button
-                    deletebtn.setDisable(false);
-
-                    return; // Exit loop
-                }
-            }
-            Label1Id.setText("Recruit not found");
-        } catch (IOException e) {
-            e.printStackTrace();
-            Label1Id.setText("Error reading recruit data");
+//    private void searchRecruit(String fullName) {
+//        try ( BufferedReader reader = new BufferedReader(new FileReader("recruit.csv"))) {
+//            String line;
+//            while ((line = reader.readLine()) != null) {
+//                String[] data = line.split(",");
+//                if (data.length >= 1 && data[0].equalsIgnoreCase(fullName)) {
+//                    // Found the recruit, update the Label with details
+//                    StringBuilder details = new StringBuilder();
+//                    for (String field : data) {
+//                        details.append(field).append("\n");
+//                    }
+//                    Label1Id.setText(details.toString());
+//                    // Enable the delete button
+//                    deletebtn.setDisable(false);
+//
+//                    return; // Exit loop
+//                }
+//            }
+//            Label1Id.setText("Recruit not found");
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Label1Id.setText("Error reading recruit data");
+//        }
+//    }
+@FXML
+    public void delete(ActionEvent event) {
+        String fullName = searchText.getText().trim();
+        if (!fullName.isEmpty()) {
+            sendDeleteRequest(fullName);
         }
     }
 
-    @FXML
-    public void delete(ActionEvent event) {
-        // Get the full name 
-        String fullName = searchText.getText().trim();
+    private void sendDeleteRequest(String fullName) {
+        try (Socket socket = new Socket("localhost", 6789);
+             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
 
-        // Create a list to store the modified lines
-        List<String> modifiedLines = new ArrayList<>();
+            // Send delete request to server
+            oos.writeObject("DeleteRecruit");
+            oos.writeObject(fullName);
+             oos.flush();
 
-        try ( BufferedReader reader = new BufferedReader(new FileReader("recruit.csv"))) {
-            String line;
-            boolean found = false;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                // Check if the line contains full name
-                if (data.length >= 1 && data[0].equalsIgnoreCase(fullName)) {
+            // Receive delete confirmation from server
+            String deleteResult = (String) ois.readObject();
+            showAlert(Alert.AlertType.INFORMATION, "Deletion", deleteResult);
 
-                    found = true;
-                    continue;
-                }
-                modifiedLines.add(line);
+            // Update UI after deletion
+            if (deleteResult.equals("Recruit deleted successfully")) {
+                Label1Id.setText("");
+                searchText.clear();
+                deletebtn.setDisable(true);
             }
 
-            if (!found) {
-            } else {
-                Label1Id.setText("Recruit deleted successfully");
-                // Write the modified lines back to the file
-                try ( BufferedWriter writer = new BufferedWriter(new FileWriter("recruit.csv"))) {
-                    for (String modifiedLine : modifiedLines) {
-                        writer.write(modifiedLine);
-                        writer.newLine();
-                    }
-                }
-            }
-        } catch (IOException e) {
+        } catch (IOException | ClassNotFoundException e) {
             e.printStackTrace();
-            Label1Id.setText("Error deleting recruit");
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to communicate with the server.");
         }
-
-        // Show a success alert
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Deletion");
-        alert.setHeaderText("Deleted Successful");
-        alert.setContentText("The member has been deleted successfully.");
-        alert.showAndWait();
     }
 }

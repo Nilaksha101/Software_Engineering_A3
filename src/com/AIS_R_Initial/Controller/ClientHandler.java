@@ -25,6 +25,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.ResultSet;
 
 
 public class ClientHandler implements Runnable {
@@ -47,6 +48,10 @@ public class ClientHandler implements Runnable {
                 handleManagementStaffRegistration(ois, oos);
             } else if ("RegisterRecruitDetails".equals(requestType)) {
                 handleRecruitDetailsRegistration(ois, oos);
+            } else if ("SearchRecruit".equals(requestType)) {
+                handleSearchRequest(ois, oos);
+            }  else if ("DeleteRecruit".equals(requestType)) {
+                handleDeleteRequest(ois, oos);
             }
             // Handle other request types here
 
@@ -62,6 +67,62 @@ public class ClientHandler implements Runnable {
         }
     }
     
+   private void handleSearchRequest(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String fullName = (String) ois.readObject();
+            String searchResult = searchRecruit(fullName, connection);
+            oos.writeObject(searchResult);
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            oos.writeObject("Error: " + e.getMessage());
+        }
+    }
+
+    private String searchRecruit(String fullName, Connection connection) throws SQLException {
+        String query = "SELECT * FROM RecruitDetails WHERE fullName = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, fullName);
+            ResultSet resultSet = pstmt.executeQuery();
+            if (resultSet.next()) {
+                // Found recruit, return details
+                StringBuilder details = new StringBuilder();
+                details.append("Full Name: ").append(resultSet.getString("fullName")).append("\n");
+                details.append("Address: ").append(resultSet.getString("address")).append("\n");
+                details.append("Phone Number: ").append(resultSet.getString("phoneNumber")).append("\n");
+                details.append("Email: ").append(resultSet.getString("email")).append("\n");
+                details.append("Username: ").append(resultSet.getString("username")).append("\n");
+                details.append("Interview Date: ").append(resultSet.getDate("interviewDate")).append("\n");
+                details.append("Qualification Level: ").append(resultSet.getString("qualificationLevel")).append("\n");
+                return details.toString();
+            } else {
+                return "Recruit not found";
+            }
+        }
+    }
+    
+    private void handleDeleteRequest(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
+        try (Connection connection = DatabaseUtil.getConnection()) {
+            String fullName = (String) ois.readObject();
+            String deleteResult = deleteRecruit(fullName, connection);
+            oos.writeObject(deleteResult);
+        } catch (ClassNotFoundException | SQLException e) {
+            e.printStackTrace();
+            oos.writeObject("Error: " + e.getMessage());
+        }
+    }
+
+    private String deleteRecruit(String fullName, Connection connection) throws SQLException {
+        String query = "DELETE FROM RecruitDetails WHERE fullName = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, fullName);
+            int rowsAffected = pstmt.executeUpdate();
+            if (rowsAffected > 0) {
+                return "Recruit deleted successfully";
+            } else {
+                return "Recruit not found";
+            }
+        }
+    }
         private void handleRecruitDetailsRegistration(ObjectInputStream ois, ObjectOutputStream oos) {
         try {
         System.out.println("Receiving recruit details...");
