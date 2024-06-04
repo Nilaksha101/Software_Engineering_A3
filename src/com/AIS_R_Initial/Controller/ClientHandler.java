@@ -52,7 +52,9 @@ public class ClientHandler implements Runnable {
                 handleSearchRequest(ois, oos);
             }  else if ("DeleteRecruit".equals(requestType)) {
                 handleDeleteRequest(ois, oos);
-            }
+            } else if ("UpdateRecruit".equals(requestType)) {
+            handleUpdateRequest(ois, oos);
+        }
             // Handle other request types here
 
         } catch (IOException | ClassNotFoundException e) {
@@ -216,4 +218,56 @@ public class ClientHandler implements Runnable {
         throw new SQLException("Database error occurred while saving recruit details.", e);
     }
     }
+    // Add this method in ClientHandler class
+private void handleUpdateRequest(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
+    try (Connection connection = DatabaseUtil.getConnection()) {
+        RecruitDetails recruit = (RecruitDetails) ois.readObject();
+        String updateResult = updateRecruitDetails(recruit, connection);
+        oos.writeObject(updateResult);
+    } catch (ClassNotFoundException | SQLException e) {
+        e.printStackTrace();
+        oos.writeObject("Error: " + e.getMessage());
+    }
+}
+
+private String updateRecruitDetails(RecruitDetails recruit, Connection connection) throws SQLException {
+//    String query = "UPDATE RecruitDetails SET fullName = ?, address = ?, phoneNumber = ?, email = ?, username = ?, password = ?, interviewDate = ?, qualificationLevel = ? WHERE fullName = ?";
+//    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+//         //pstmt.setString(1, recruit.getFullName());
+//        pstmt.setString(1, recruit.getAddress());
+//        pstmt.setString(2, recruit.getPhoneNumber());
+//        pstmt.setString(3, recruit.getEmail());
+//        pstmt.setString(4, recruit.getUsername());
+//        pstmt.setString(5, recruit.getPassword());
+//        pstmt.setDate(6, new java.sql.Date(recruit.getInterviewDate().getTime()));
+//        pstmt.setString(7, recruit.getQualificationLevel().name());
+//        pstmt.setString(8, recruit.getFullName());
+//        int rowsAffected = pstmt.executeUpdate();
+//        if (rowsAffected > 0) {
+//            return "Recruit updated successfully";
+//        } else {
+//            return "Recruit not found";
+//        }
+//    }
+    String query = "UPDATE RecruitDetails SET fullName = ?, address = ?, phoneNumber = ?, email = ?, username = ?, password = ?, interviewDate = ?, qualificationLevel = ? WHERE fullName = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+        pstmt.setString(1, recruit.getFullName());
+        pstmt.setString(2, recruit.getAddress());
+        pstmt.setString(3, recruit.getPhoneNumber());
+        pstmt.setString(4, recruit.getEmail());
+        pstmt.setString(5, recruit.getUsername());
+        pstmt.setString(6, recruit.getPassword());
+        pstmt.setDate(7, new java.sql.Date(recruit.getInterviewDate().getTime()));
+        pstmt.setString(8, recruit.getQualificationLevel().name());
+        pstmt.setString(9, recruit.getFullName());  // Use fullName again in the WHERE clause to identify the record
+        int rowsAffected = pstmt.executeUpdate();
+        if (rowsAffected > 0) {
+            return "Recruit updated successfully";
+        } else {
+            return "Recruit not found";
+        }
+    }
+}
+
+    
 }

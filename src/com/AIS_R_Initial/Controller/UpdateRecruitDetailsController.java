@@ -11,8 +11,13 @@ import java.io.BufferedWriter;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.net.Socket;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -82,7 +87,7 @@ public class UpdateRecruitDetailsController implements Initializable {
     public void search(ActionEvent event) {
         String fullName = searchText.getText().trim();
         if (!fullName.isEmpty()) {
-            searchRecruit(fullName);
+             sendSearchRequest(fullName);
         }
     }
 
@@ -159,117 +164,107 @@ public class UpdateRecruitDetailsController implements Initializable {
             alert.showAndWait();
             return;
         }
+        
+        // Create a new RecruitDetails object with updated values
+        Date date = java.sql.Date.valueOf(interviewDateValue);
+        RecruitDetails recruit = new RecruitDetails(fullName, address, phoneNumber, email, username, password, date, RecruitDetails.QualificationLevel.valueOf(qualificationLevel));
 
-        delete();//calling delete method
-        add();//calling adding method
-        // Show a success alert
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Success");
-        alert.setHeaderText("Update Successful");
-        alert.setContentText("The Recruit member has been updated successfully.");
+        // Send update request to the server
+        sendUpdateRequest(recruit);
+        
+    }
+      private void sendSearchRequest(String fullName) {
+        try (Socket socket = new Socket("localhost", 6789);
+             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
+
+            oos.writeObject("SearchRecruit");
+            oos.writeObject(fullName);
+
+            String searchResult = (String) ois.readObject();
+            updateUI(searchResult);
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to communicate with the server.");
+        }
+    }
+
+      
+   private void updateUI(String searchResult) {
+    if (searchResult.equals("Recruit not found")) {
+        showAlert(Alert.AlertType.ERROR, "Error", "Recruit not found.");
+        clearFields();
+    } else {
+        String[] data = searchResult.split("\n");
+        fullNameField.setText(data[0].split(": ")[1]);
+        fullNameField.setDisable(true);
+        addressField.setText(data[1].split(": ")[1]);
+        phoneNumberField.setText(data[2].split(": ")[1]);
+        emailField.setText(data[3].split(": ")[1]);
+        usernameField.setText(data[4].split(": ")[1]);
+        passwordField.setText(data[4].split(": ")[1]);
+
+        // Handle date parsing
+        try {
+            LocalDate interviewLocalDate = LocalDate.parse(data[5].split(": ")[1]);
+            interviewDate.setValue(interviewLocalDate);
+        } catch (DateTimeParseException e) {
+            interviewDate.setValue(null); 
+        }
+
+        // Set the qualification level in the ComboBox
+        try {
+            String qualificationLevel = data[6].split(": ")[1];
+            QualificationComboBox.setValue(qualificationLevel);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            QualificationComboBox.setValue(null); 
+        }
+
+        updatebtn.setDisable(false);
+    }
+}
+
+
+    private void sendUpdateRequest(RecruitDetails recruit) {
+        try (Socket socket = new Socket("localhost", 6789);
+             ObjectOutputStream oos = new ObjectOutputStream(socket.getOutputStream());
+             ObjectInputStream ois = new ObjectInputStream(socket.getInputStream())) {
+
+            oos.writeObject("UpdateRecruit");
+            oos.writeObject(recruit);
+
+            String updateResult = (String) ois.readObject();
+            showAlert(Alert.AlertType.INFORMATION, "Update", updateResult);
+            
+            if ("Update successful".equals(updateResult)) {
+            clearFields();
+        }
+
+        } catch (IOException | ClassNotFoundException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to communicate with the server.");
+        }
+    }
+
+    private void showAlert(Alert.AlertType alertType, String title, String content) {
+        Alert alert = new Alert(alertType);
+        alert.setTitle(title);
+        alert.setContentText(content);
         alert.showAndWait();
-
     }
 
-    private void searchRecruit(String fullName) {
-        try ( BufferedReader reader = new BufferedReader(new FileReader("recruit.csv"))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                if (data.length >= 1 && data[0].equalsIgnoreCase(fullName)) {
-                    // Found the recruit and settin them to corosponding fields
-                    fullNameField.setText(data[0]);
-                    addressField.setText(data[5]);
-                    phoneNumberField.setText(data[4]);
-                    emailField.setText(data[3]);
-                    usernameField.setText(data[1]);
-                    passwordField.setText(data[2]);
-                    LocalDate interviewLocalDate = LocalDate.parse(data[6]);
-                    interviewDate.setValue(interviewLocalDate);
-                    // Set the qualification level in the ComboBox
-                    String qualificationLevel = data[7];
-                    QualificationComboBox.setValue(qualificationLevel);
-
-                    return;
-                }
-            }
-            // If the loop finishes without finding the recruit
-            System.out.println("Recruit not found");
-            Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Error");
-            alert.setHeaderText("User Not Found");
-            alert.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
-    }
-
-    private void delete() {
-        // Get the full name 
-        String fullName = searchText.getText().trim();
-
-        // Create a list to store the modified lines
-        List<String> modifiedLines = new ArrayList<>();
-
-        try ( BufferedReader reader = new BufferedReader(new FileReader("recruit.csv"))) {
-            String line;
-            boolean found = false;
-            while ((line = reader.readLine()) != null) {
-                String[] data = line.split(",");
-                // Check if the line contains the recruit's full name
-                if (data.length >= 1 && data[0].equalsIgnoreCase(fullName)) {
-                    found = true;
-                    continue;
-                }
-                modifiedLines.add(line);
-            }
-
-            // Write the modified lines to the file
-            try ( BufferedWriter writer = new BufferedWriter(new FileWriter("recruit.csv"))) {
-                for (String modifiedLine : modifiedLines) {
-                    writer.write(modifiedLine);
-                    writer.newLine();
-                }
-
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-
-        }
-    }
-
-    private void saveDataToCSV() {
-        try ( BufferedWriter writer = new BufferedWriter(new FileWriter("recruit.csv", true))) {
-            for (RecruitDetails staff : staffList) {
-                writer.write(staff.getFullName() + ","
-                        + staff.getUsername() + ","
-                        + staff.getPassword() + ","
-                        + staff.getEmail() + ","
-                        + staff.getPhoneNumber() + ","
-                        + staff.getAddress() + ","
-                        + staff.getInterviewDate() + ","
-                        + staff.getQualificationLevel());
-
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    private List<RecruitDetails> staffList = new ArrayList<>();
-
-    private void add() {
-        LocalDate localDate = interviewDate.getValue();
-        Date date = java.sql.Date.valueOf(localDate);
-
-        RecruitDetails details = new RecruitDetails(fullNameField.getText(), addressField.getText(), phoneNumberField.getText(), emailField.getText(), usernameField.getText(), passwordField.getText(), date, RecruitDetails.QualificationLevel.valueOf(QualificationComboBox.getValue()));
-
-        // Add the Staff object to the list
-        staffList.add(details);
-        // Save the data to the CSV file
-        saveDataToCSV();
-    }
+    private void clearFields() {
+        fullNameField.clear();
+        addressField.clear();
+        phoneNumberField.clear();
+        emailField.clear();
+        usernameField.clear();
+        passwordField.clear();
+        interviewDate.setValue(null);
+        QualificationComboBox.setValue(null);
+        updatebtn.setDisable(true);
+    }  
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
