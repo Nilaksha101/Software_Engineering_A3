@@ -22,7 +22,7 @@ public class Main extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         // Load the FXML file
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/AIS_R_Initial/View/updateRecruitDetails.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/AIS_R_Initial/View/RecruitVerification.fxml"));
         Parent root = loader.load();
         // Set up the scene
         Scene scene = new Scene(root);

@@ -52,18 +52,4 @@ public class ComputeServer implements Runnable {
         }
     }
 }
-//    private void saveClassToFile(String className, byte[] classBytes) {
-//        try {
-//            // Convert class name to file path 
-//            String filePath = "C:\\Users\\User\\Desktop\\RuntimeServer\\build\\classes\\"
-//                    + className.replace('.', '/') + ".class";
-//
-//            // Save class bytes to file
-//            Path path = Path.of(filePath);
-//            Files.createDirectories(path.getParent());
-//            Files.write(path, classBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 

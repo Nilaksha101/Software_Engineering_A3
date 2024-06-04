@@ -44,17 +44,26 @@ public class DatabaseSetup {
                 + "managementLevel ENUM('SENIOR_MANAGER', 'MID_LEVEL_MANAGER', 'SUPERVISOR'), "
                 + "branch ENUM('MELBOURNE', 'SYDNEY', 'BRISBANE', 'ADELAIDE'))");
             
-            // Create RecruitDetails table if it doesn't exist
-            statement.executeUpdate("CREATE TABLE IF NOT EXISTS RecruitDetails (" 
-                    + "id INT AUTO_INCREMENT PRIMARY KEY, " +
-                    "fullName VARCHAR(100), " +
-                    "address VARCHAR(200), " +
-                    "phoneNumber VARCHAR(15), " +
-                    "email VARCHAR(100), " +
-                    "username VARCHAR(50), " +
-                    "password VARCHAR(50), " +
-                    "interviewDate DATE, " +
-                    "qualificationLevel ENUM('BACHELORS', 'MASTERS', 'PHD'))");
+      
+           // Create RecruitDetails table if it doesn't exist
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS RecruitDetails (" 
+                + "id INT AUTO_INCREMENT PRIMARY KEY, " +
+                "fullName VARCHAR(100), " +
+                "address VARCHAR(200), " +
+                "phoneNumber VARCHAR(15), " +
+                "email VARCHAR(100), " +
+                "username VARCHAR(50), " +
+                "password VARCHAR(50), " +
+                "interviewDate DATE, " +
+                "qualificationLevel ENUM('BACHELORS', 'MASTERS', 'PHD'), " +
+                "department VARCHAR(100))"); 
+                
+                 // Create UserCredentials table if it doesn't exist
+                    statement.executeUpdate("CREATE TABLE IF NOT EXISTS UserCredentials ("
+                    + "id INT AUTO_INCREMENT PRIMARY KEY, "
+                    + "username VARCHAR(50) UNIQUE NOT NULL, "
+                    + "password VARCHAR(100) NOT NULL, "
+                    + "authenticationCode VARCHAR(10) NOT NULL)");
             
             
         } catch (SQLException e) {

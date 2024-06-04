@@ -54,7 +54,9 @@ public class ClientHandler implements Runnable {
                 handleDeleteRequest(ois, oos);
             } else if ("UpdateRecruit".equals(requestType)) {
             handleUpdateRequest(ois, oos);
-        }
+        } else if ("UpdateDepartment".equals(requestType)) {
+                handleUpdateDepartmentRequest(ois, oos);
+            }
             // Handle other request types here
 
         } catch (IOException | ClassNotFoundException e) {
@@ -88,6 +90,7 @@ public class ClientHandler implements Runnable {
             if (resultSet.next()) {
                 // Found recruit, return details
                 StringBuilder details = new StringBuilder();
+                details.append("Id : ").append(resultSet.getInt("id")).append("\n");
                 details.append("Full Name: ").append(resultSet.getString("fullName")).append("\n");
                 details.append("Address: ").append(resultSet.getString("address")).append("\n");
                 details.append("Phone Number: ").append(resultSet.getString("phoneNumber")).append("\n");
@@ -231,24 +234,7 @@ private void handleUpdateRequest(ObjectInputStream ois, ObjectOutputStream oos) 
 }
 
 private String updateRecruitDetails(RecruitDetails recruit, Connection connection) throws SQLException {
-//    String query = "UPDATE RecruitDetails SET fullName = ?, address = ?, phoneNumber = ?, email = ?, username = ?, password = ?, interviewDate = ?, qualificationLevel = ? WHERE fullName = ?";
-//    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
-//         //pstmt.setString(1, recruit.getFullName());
-//        pstmt.setString(1, recruit.getAddress());
-//        pstmt.setString(2, recruit.getPhoneNumber());
-//        pstmt.setString(3, recruit.getEmail());
-//        pstmt.setString(4, recruit.getUsername());
-//        pstmt.setString(5, recruit.getPassword());
-//        pstmt.setDate(6, new java.sql.Date(recruit.getInterviewDate().getTime()));
-//        pstmt.setString(7, recruit.getQualificationLevel().name());
-//        pstmt.setString(8, recruit.getFullName());
-//        int rowsAffected = pstmt.executeUpdate();
-//        if (rowsAffected > 0) {
-//            return "Recruit updated successfully";
-//        } else {
-//            return "Recruit not found";
-//        }
-//    }
+
     String query = "UPDATE RecruitDetails SET fullName = ?, address = ?, phoneNumber = ?, email = ?, username = ?, password = ?, interviewDate = ?, qualificationLevel = ? WHERE fullName = ?";
     try (PreparedStatement pstmt = connection.prepareStatement(query)) {
         pstmt.setString(1, recruit.getFullName());
@@ -268,6 +254,74 @@ private String updateRecruitDetails(RecruitDetails recruit, Connection connectio
         }
     }
 }
+
+//private void handleUpdateDepartmentRequest(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
+//        try (Connection connection = DatabaseUtil.getConnection()) {
+//            String fullName = (String) ois.readObject();
+//            String department = (String) ois.readObject();
+//            String updateResult = updateRecruitDepartment(fullName, department, connection);
+//            oos.writeObject(updateResult);
+//        } catch (ClassNotFoundException | SQLException e) {
+//            e.printStackTrace();
+//            oos.writeObject("Error: " + e.getMessage());
+//        }
+//    }
+//
+//    private String updateRecruitDepartment(String fullName, String department, Connection connection) {
+//        
+//          System.out.println("Updating department for recruit: " + fullName);
+//    System.out.println("New department: " + department);
+//    
+//        String query = "UPDATE RecruitDetails SET department = ? WHERE fullName = ?";
+//        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+//            pstmt.setString(1, department);
+//            pstmt.setString(2, fullName);
+//            int rowsAffected = pstmt.executeUpdate();
+//            if (rowsAffected > 0) {
+//                return "Success";
+//            } else {
+//                return "Recruit not found";
+//            }
+//        }catch (SQLException e) {
+//            e.printStackTrace();
+//            //oos.writeObject("Error: " + e.getMessage());
+//        }
+//    return "";
+//    }
+
+private void handleUpdateDepartmentRequest(ObjectInputStream ois, ObjectOutputStream oos) throws IOException {
+    try (Connection connection = DatabaseUtil.getConnection()) {
+        int id = (Integer) ois.readObject();
+        String department = (String) ois.readObject();
+
+        System.out.println("Received update department request for recruitId: " + id + " and department: " + department);
+
+        String updateResult = updateRecruitDepartment(id, department, connection);
+        oos.writeObject(updateResult);
+    } catch (ClassNotFoundException | SQLException e) {
+        e.printStackTrace();
+        oos.writeObject("Error: " + e.getMessage());
+    }
+}
+
+private String updateRecruitDepartment(int id, String department, Connection connection) throws SQLException {
+    String query = "UPDATE RecruitDetails SET department = ? WHERE id = ?";
+    try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+        pstmt.setString(1, department);
+        pstmt.setInt(2, id);
+        int rowsAffected = pstmt.executeUpdate();
+
+        System.out.println("Update result: " + rowsAffected + " rows affected");
+
+        if (rowsAffected > 0) {
+            return "Success";
+        } else {
+            return "Recruit not found";
+        }
+    }
+}
+
+
 
     
 }
