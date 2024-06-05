@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="417.0" prefWidth="641.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ais_r_initial.ais.r.initial.Controller.RecruitDetailsListOTPController">
+   <children>
+      <Label layoutX="201.0" layoutY="25.0" text="All OTP request Recruits" textFill="#b71b1b">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TableView fx:id="recruitTableView" layoutX="15.0" layoutY="53.0" prefHeight="322.0" prefWidth="619.0">
+        <columns>
+          <TableColumn fx:id="fullName" prefWidth="66.0" text="FullName" />
+          <TableColumn fx:id="address" prefWidth="54.0" text="Address" />
+            <TableColumn fx:id="phoneNo" prefWidth="61.0" text="Phone No" />
+            <TableColumn fx:id="emailAddress" prefWidth="88.0" text="Email Address" />
+            <TableColumn fx:id="dateOfInterview" prefWidth="104.0" text="Date of interview" />
+            <TableColumn fx:id="highestQualification" prefWidth="126.0" text="Highest qualification" />
+            <TableColumn fx:id="department" prefWidth="112.0" text="Department" />
+            <TableColumn fx:id="otp" prefWidth="112.0" text="OTP" />
+            <TableColumn fx:id="savedAt" text="Saved at" />
+
+
+        </columns>
+      </TableView>
+      <Button layoutX="501.0" layoutY="22.0" mnemonicParsing="false" onAction="#generateOTP" text="Generate OTP For All" />
+   </children>
+</AnchorPane>
