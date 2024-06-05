@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/20.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ais_r_initial.ais.r.initial.Controller.RecruitVerificationController">
+   <children>
+      <Label layoutX="65.0" layoutY="57.0" text="Search" />
+      <Label id="Label1Id" fx:id="Label1Id" layoutX="160.0" layoutY="123.0" prefHeight="123.0" prefWidth="342.0" text="Label1" />
+      <Label layoutX="68.0" layoutY="317.0" text="Department" />
+      <TextField id="searchText" fx:id="searchText" layoutX="141.0" layoutY="53.0" prefHeight="25.0" prefWidth="362.0" />
+      <Button id="searchbtn" fx:id="searchbtn" layoutX="513.0" layoutY="53.0" mnemonicParsing="false" onAction="#search" text="Search"/>
+<!--      <ListView fx:id="searchList" layoutX="141.0" layoutY="92.0" onMouseClicked="#handleListViewClick" prefHeight="200.0" prefWidth="362.0" />-->
+      <ComboBox id="departmentCombo" fx:id="departmentCombo" layoutX="150.0" layoutY="313.0" onAction="#select" prefHeight="25.0" prefWidth="355.0" />
+      <Button id="allocatebtn" fx:id="allocatebtn" layoutX="522.0" layoutY="349.0" mnemonicParsing="false" onAction="#allocate" text="Allocate" />
+   </children>
+</AnchorPane>

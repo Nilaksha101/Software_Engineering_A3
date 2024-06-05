@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ais_r_initial.ais.r.initial.Controller.ManagementDashBoardController">
+   
+            
+         <AnchorPane prefHeight="515.0" prefWidth="220.0" style="-fx-background-color: #0598ff;" BorderPane.alignment="CENTER">
+               <children>
+            <Button id="recruitVerificationId" fx:id="recruitVerificationId" layoutX="27.0" layoutY="233.0" mnemonicParsing="false" onAction="#selectRecruitVerification" prefHeight="25.0" prefWidth="169.0" text="Recruit Verification" />
+             <Button id="updateRecruitButton" fx:id="updateRecruitButton" layoutX="27.0" layoutY="303.0" mnemonicParsing="false" onAction="#navigateToUpdateRecruit" prefHeight="25.0" prefWidth="169.0" text="Update Recruit Details" />
+         <Label layoutX="71.0" layoutY="104.0" text="Dashboard">
+            <font>
+               <Font name="Gabriola" size="23.0" />
+            </font>
+         </Label>
+         <Button id="recruitVerificationId" fx:id="viewAllRecruit" layoutX="24.0" layoutY="162.0" mnemonicParsing="false" onAction="#viewAllRecruitDetail" prefHeight="25.0" prefWidth="169.0" text="View All Recruit" />
+         </children>
+         
+         
+         </AnchorPane>
+       <Button id="exitButton" fx:id="exitButton" layoutX="530.0" layoutY="20.0" mnemonicParsing="false" onAction="#exit" prefHeight="25.0" prefWidth="55.0" text="Logout" />
+   <Label layoutX="240.0" layoutY="187.0" text="Welcome to Recruit Management System" textAlignment="CENTER">
+      <font>
+         <Font name="Gabriola" size="27.0" />
+      </font>
+   </Label>
+         
+</AnchorPane>
