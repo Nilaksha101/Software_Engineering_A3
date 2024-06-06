@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="417.0" prefWidth="608.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ais_r_enhanced.ais.r.enhanced.Controller.ManagementStaffListController">
+   <children>
+      <Label layoutX="165.0" layoutY="24.0" text="Welcome to the Recruit details List Page" textFill="#b71b1b">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TableView fx:id="managementTableView" layoutX="15.0" layoutY="53.0" prefHeight="322.0" prefWidth="585.0">
+        <columns>
+          <TableColumn fx:id="fullName" prefWidth="66.0" text="FullName" />
+          <TableColumn fx:id="address" prefWidth="54.0" text="Address" />
+            <TableColumn fx:id="phoneNo" prefWidth="61.0" text="Phone No" />
+            <TableColumn fx:id="emailAddress" prefWidth="88.0" text="Email Address" />
+            <TableColumn fx:id="staffId" prefWidth="104.0" text="Staff ID" />
+            <TableColumn fx:id="managementLevel" prefWidth="126.0" text="Management Level" />
+            <TableColumn fx:id="branch" prefWidth="84.0" text="Branch" />
+
+
+
+        </columns>
+      </TableView>
+   </children>
+</AnchorPane>

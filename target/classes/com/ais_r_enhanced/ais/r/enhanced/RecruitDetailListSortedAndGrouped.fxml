@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="417.0" prefWidth="511.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ais_r_enhanced.ais.r.enhanced.Controller.RecruitDetailsListSortedAndGroupedController">
+   <children>
+      <Label layoutX="131.0" layoutY="24.0" text="Welcome to the Recruit details List Page" textFill="#b71b1b">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <TableView fx:id="recruitTableView" layoutX="44.0" layoutY="60.0" prefHeight="322.0" prefWidth="423.0">
+        <columns>
+            <TableColumn fx:id="locations" prefWidth="163.0" text="Location" />
+          <TableColumn fx:id="fullName" prefWidth="191.0" text="FullName" />
+
+        </columns>
+      </TableView>
+<!--       <Button fx:id="moveToHome" layoutX="642.0" layoutY="380.0" mnemonicParsing="false" text="Home" onAction="#moveToHome" />-->
+   </children>
+</AnchorPane>

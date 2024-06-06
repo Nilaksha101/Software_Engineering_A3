@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="417.0" prefWidth="872.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.ais_r_enhanced.ais.r.enhanced.Controller.RecruitDetailsListController">
+    <children>
+        <Label layoutX="165.0" layoutY="24.0" text="Welcome to the Recruit details List Page" textFill="#b71b1b">
+            <font>
+                <Font size="14.0" />
+            </font>
+        </Label>
+        <TableView fx:id="recruitTableView" layoutX="15.0" layoutY="53.0" prefHeight="322.0" prefWidth="862.0">
+            <columns>
+                <TableColumn fx:id="fullName" prefWidth="66.0" text="FullName" />
+                <TableColumn fx:id="address" prefWidth="54.0" text="Address" />
+                <TableColumn fx:id="phoneNo" prefWidth="61.0" text="Phone No" />
+                <TableColumn fx:id="emailAddress" prefWidth="88.0" text="Email Address" />
+                <TableColumn fx:id="dateOfInterview" prefWidth="104.0" text="Date of interview" />
+                <TableColumn fx:id="highestQualification" prefWidth="126.0" text="Highest qualification" />
+                <TableColumn fx:id="department" prefWidth="84.0" text="Department" />
+                <TableColumn fx:id="locations" prefWidth="65.0" text="Location" />
+                <TableColumn fx:id="timeToLeadAndCompleteProject" prefWidth="228.0" text="timeToLeadAndCompleteProject" />
+                <TableColumn fx:id="experience" prefWidth="39.0" text="Experience" />
+
+
+            </columns>
+        </TableView>
+        <!--       <Button fx:id="moveToHome" layoutX="642.0" layoutY="380.0" mnemonicParsing="false" text="Home" onAction="#moveToHome" />-->
+    </children>
+</AnchorPane>
